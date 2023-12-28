@@ -1,0 +1,52 @@
+﻿@model IEnumerable<MyBlog.Models.Domain.Tag>?
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<div class="bg-dark bg-opacity-50 py-2">
+    <div class="container">
+        <h1 class= "text-light">All Tags: </h1>
+    </div>
+</div>
+
+<div class="container py-5">
+    @if (Model != null && Model.Any()) {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Displayed Name</th>
+                <th>Editor Options</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var tag in Model) {
+                <tr>
+                    <td>@tag.Id</td>
+                    <td>@tag.Name</td>
+                    <td>@tag.DisplayName</td>
+                    <td>
+                        <a class="btn btn-outline-success" asp-area="" asp-controller="AdminTags"
+                           asp-action="EditTag"
+                           asp-route-id="@tag.Id">
+                            Edit
+                        </a>
+                        
+                        <a class="btn btn-danger" asp-area="" asp-controller="AdminTags"
+                           asp-action="DeleteTag"
+                           asp-route-id="@tag.Id">
+                            Delete
+                        </a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else {
+        <p>No Tags Found!</p>
+    }
+</div>

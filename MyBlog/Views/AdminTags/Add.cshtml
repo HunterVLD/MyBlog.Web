@@ -1,0 +1,29 @@
+﻿@model MyBlog.Models.ViewModels.ForTags.AddTagRequest
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<div class="bg-dark bg-opacity-50 py-2">
+    <div class="container">
+        <h1 class= "text-light">Create New Tag For Blog -- Admin Functionality</h1>
+    </div>
+</div>
+
+<div class="container py-5">
+    <form method="post">
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" class="form-control" id="name" asp-for="NameOfTag" />
+            <div class="form-text">Name of Tag List</div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Display Name</label>
+            <input type="text" class="form-control" id="displayName" asp-for="DisplayName"/>
+            <div class="form-text">Name of Post inside</div>
+        </div>
+
+        <button type="submit" class="btn btn-dark text-light">Submit</button>
+    </form>
+</div>

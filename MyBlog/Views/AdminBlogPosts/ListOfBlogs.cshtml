@@ -1,0 +1,59 @@
+﻿@model IEnumerable<MyBlog.Models.Domain.BlogPost>?
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<div class="bg-dark bg-opacity-50 py-2">
+    <div class="container">
+        <h1 class= "text-light">List Of All Posts -- <font color="#1b1a1a">Admin Functionality</font></h1>
+    </div>
+</div>
+
+<div class="container py-5">
+    @if (Model != null && Model.Any()) {
+        <table class="table">
+            <thead>
+            <tr>
+                <td>Id</td>
+                <td>Heading</td>
+                <td>Tags</td>
+                <td>Edit Options</td>
+            </tr>
+            </thead>
+            <tbody>
+                @foreach (var post in Model) {
+                    <tr>
+                        <td>@post.Id</td>
+                        <td>@post.Heading</td>
+                        <td>
+                            <div class="d-flex">
+                                @foreach (var tag in post.Tags) {
+                                    <span class="badge bg-secondary me-1">@tag.DisplayName</span>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <a class="btn btn-outline-success" asp-area="" asp-controller="AdminBlogPosts"
+                               asp-action="EditPost"
+                               asp-route-id="@post.Id">
+                                Edit
+                            </a>
+
+                            <a class="btn btn-danger" asp-area="" asp-controller="AdminBlogPosts"
+                               asp-action="DeletePost"
+                               asp-route-id="@post.Id">
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>                  
+    }
+    else {
+        <p>Blog Posts Not Found!</p>
+    }
+    
+</div>
