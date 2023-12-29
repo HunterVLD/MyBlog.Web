@@ -30,10 +30,15 @@ public class BlogPostRepository : IBlogPostRepository
     {
         throw new NotImplementedException();
     }
+
+    public async Task<BlogPost?> GetByUrlAsync(string url)
+    {
+        return await _dbContext.BlogPosts.Include(x => x.Tags)
+            .FirstOrDefaultAsync(x => x.UrlHandle == url);
+    }
     
     #endregion
     
-    //todo
     #region CRUD
     public async Task<BlogPost?> AddAsync(BlogPost? post)
     {

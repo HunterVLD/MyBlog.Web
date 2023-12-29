@@ -20,3 +20,12 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.new-font {
+  color: #1c1f23;
+  font-family: "MS Gothic", serif;
+}
+
+.blog-details-content img{
+  max-width: 100%;
+}

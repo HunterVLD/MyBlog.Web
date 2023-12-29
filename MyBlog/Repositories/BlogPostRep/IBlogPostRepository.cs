@@ -7,11 +7,10 @@ public interface IBlogPostRepository
 {
     Task<IEnumerable<BlogPost>> GetAllAsync();
     Task<BlogPost?> GetByIdAsync(Guid id);
+    Task<BlogPost?> GetByUrlAsync(string url);
     Task<BlogPost?> GetByTagAsync(Tag tag);
-    //TODO PROBABLY USE RETURN BOOL
     Task<BlogPost?> AddAsync(BlogPost? post);
     Task<BlogPost?> UpdateAsync(BlogPost? post);
-    //TODO PROBABLY USE RETURN BOOL
     Task<BlogPost?> DeleteAsync(Guid id);
 
     //Secondary functionality

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using MyBlog.Controllers;
 using MyBlog.Data;
 using MyBlog.Repositories;
 using MyBlog.Repositories.BlogPostRep;
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<MyBlogDbContext>(options =>
 
 builder.Services.AddScoped<ITagRepository, TagRepository>();
 builder.Services.AddScoped<IBlogPostRepository, BlogPostRepository>();
+builder.Services.AddScoped<IImageRepository, CloudinaryImageRepository>();
 
 var app = builder.Build();
 
@@ -33,5 +35,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+Console.WriteLine(System.DateTime.Today);
 
 app.Run();
