@@ -1,15 +1,12 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Components.Forms;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MyBlog.Data;
 using MyBlog.Models.Domain;
-using MyBlog.Models.ViewModels;
 using MyBlog.Models.ViewModels.ForTags;
 using MyBlog.Repositories;
 
 namespace MyBlog.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class AdminTagsController : Controller
 {
     private readonly ITagRepository _tagRepository;

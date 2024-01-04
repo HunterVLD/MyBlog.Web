@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MyBlog.Models.ViewModels.ForBlogPosts;

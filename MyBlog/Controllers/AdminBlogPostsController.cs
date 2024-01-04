@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using MyBlog.Models.Domain;
 using MyBlog.Models.ViewModels.ForBlogPosts;
 using MyBlog.Repositories;
 using MyBlog.Repositories.BlogPostRep;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MyBlog.Controllers;
 
+[Authorize(Roles = "Admin")]
 public class AdminBlogPostsController : Controller
 {
     private readonly ITagRepository _tagRepository;
@@ -64,7 +64,6 @@ public class AdminBlogPostsController : Controller
     #endregion
     
     #region MiscMethods
-
     [HttpGet]
     public async Task<IActionResult> DeletePost(Guid id)
     {
@@ -85,7 +84,6 @@ public class AdminBlogPostsController : Controller
     #endregion
     
     #region EditMethods
-
     [HttpGet]
     public async Task<IActionResult> EditPost(Guid id)
     {

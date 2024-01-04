@@ -9,7 +9,7 @@ public class MyBlogDbContext : DbContext
     public DbSet<BlogPost> BlogPosts { get; set; }
     public DbSet<Tag> Tags { get; set; }
     
-    public MyBlogDbContext(DbContextOptions options) : base(options)
+    public MyBlogDbContext(DbContextOptions<MyBlogDbContext> options) : base(options)
     {
         
     }

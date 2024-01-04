@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
@@ -26,7 +29,8 @@
                         <a class="nav-link text-light" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
 
-                    <!-- FOR TAGS -->
+                    @if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin")) {
+                        <!-- FOR TAGS -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Admin Tags Editor
@@ -72,8 +76,42 @@
                             
                         </ul>
                     </li>
+                    }
                     
                 </ul>
+
+                <div class="d-flex align-items-center">
+                    
+                    @if (SignInManager.IsSignedIn(User)) {
+                        <div class="me-3 text-light">
+                            <!-- todo CREATE BUTTON TO USER PAGE-->
+                            @User.Identity?.Name
+                        </div>
+                        
+                        <a class="btn me-3 bg-light text-dark"
+                           asp-area=""
+                           asp-controller="Account"
+                           asp-action="Logout">
+                            Logout
+                        </a>
+                    }
+                    else {
+                        <a class="btn me-3 bg-light text-dark"
+                           asp-area=""
+                           asp-controller="Account"
+                           asp-action="Register">
+                            Sign Up
+                        </a>
+                        <a class="btn me-3 bg-light text-dark"
+                           asp-area=""
+                           asp-controller="Account"
+                           asp-action="Login">
+                            Sign In
+                        </a>
+                    }
+                    
+                </div>
+
             </div>
         </div>
     </nav>
