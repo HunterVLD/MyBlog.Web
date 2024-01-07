@@ -15,6 +15,7 @@ namespace MyBlog.Controllers
             _imageRepository = imageRepository;
         }
         
+        //only for file without [FromBody]
         [HttpPost]
         public async Task<IActionResult> UploadAsync(IFormFile file)
         {

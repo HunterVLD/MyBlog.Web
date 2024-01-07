@@ -1,6 +1,8 @@
-﻿namespace MyBlog.Models.Domain;
+﻿using MyBlog.Models.Domain;
 
-public class BlogPost
+namespace MyBlog.Models.ViewModels.ForBlogPosts;
+
+public class BlogDetailsRequest
 {
     public Guid Id { get; set; }
     public string Heading { get; set; } 
@@ -18,5 +20,8 @@ public class BlogPost
     //many to many // many TAGS relationShip
     public ICollection<Tag> Tags { get; set; }
     
-    public ICollection<BlogPostLike> Likes { get; set; }
+    public int TotalLikes { get; set; }
+    
+    //for INDEX and for disabling button "like"
+    public bool IsLikedByCurrentUser { get; set; }
 }

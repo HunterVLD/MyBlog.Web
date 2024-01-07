@@ -1,5 +1,8 @@
-﻿@model MyBlog.Models.Domain.BlogPost?
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
 
+@model MyBlog.Models.ViewModels.ForBlogPosts.BlogDetailsRequest?
 @{
     ViewBag.Title = Model?.PageTitle ?? "Page Not Found";
     Layout = "_Layout";
@@ -14,6 +17,22 @@
                 <div class="d-flex justify-content-between mb-3">
                     <span class="text-secondary">@Model.Author</span>
                     <span class="text-secondary">@Model.PublishedDate.ToShortDateString()</span>
+                </div>
+                
+                <div class="mb-3">
+                    @if (SignInManager.IsSignedIn(User)) {
+                        if (Model.IsLikedByCurrentUser) {
+                            <a style="cursor:pointer;">
+                                <i class="bi bi-hand-thumbs-up"></i>
+                            </a>
+                        }
+                        else {
+                            <a id="btnLike" style="cursor:pointer;">
+                                <i class="bi bi-hand-thumbs-up-fill"></i>
+                            </a>
+                        }
+                    }
+                    <span id="totalLikes">@Model.TotalLikes</span> likes 
                 </div>
                 
                 <div class="mb-3 d-flex">
@@ -36,3 +55,47 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const btnLikeEl = document.getElementById('btnLike');
+        const amountOfLikes = document.getElementById('totalLikes');
+        
+        //other func for getting total amount from api method by specific
+        //route by Model.id, when we call this fetches - we call path firstly with
+        //params or simply calling method
+        //IN GET METHODS WE DONT WRITE "body: JSON.stringify({...})"
+        //WHEN WE GET SOME VALS WE MUST CONVERT DATA TO JSON .then(data => data.json())
+        async function getTotalLikes(){
+            fetch('/api/BlogPostLike/@Model.Id/totalLikes', {
+                method: 'GET',
+                headers : {
+                    'Content-Type': 'application/json',
+                    'Accept': '*/*'
+                }
+            }).then(data => data.json())
+              .then(result => amountOfLikes.innerHTML = result);
+        }   
+        
+        //func from api controller 
+        async function addLikeForBlog(){
+            fetch('/api/BlogPostLike/Add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type' : 'application/json',
+                    'Accept' : '*/*'
+                },
+                //passing vars to func body
+                body : JSON.stringify({ blogPostId: '@Model.Id', 
+                userId: '@UserManager.GetUserId(User)' })
+                
+            }).then(() => {
+                btnLikeEl.innerHTML = '<i class="bi bi-hand-thumbs-up"></i>';
+                btnLikeEl.removeEventListener('click', addLikeForBlog);
+                getTotalLikes();
+            })
+        }
+        
+        btnLikeEl.addEventListener('click', addLikeForBlog);
+    </script>
+}
