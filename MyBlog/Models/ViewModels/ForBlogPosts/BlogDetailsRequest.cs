@@ -24,4 +24,10 @@ public class BlogDetailsRequest
     
     //for INDEX and for disabling button "like"
     public bool IsLikedByCurrentUser { get; set; }
+    
+    //just for your comment for write
+    public string CommentsDescription { get; set; }
+    
+    //for display all comments
+    public IEnumerable<BlogComment> Comments { get; set; }
 }

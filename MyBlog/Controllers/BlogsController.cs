@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MyBlog.Models.Domain;
 using MyBlog.Models.ViewModels.ForBlogPosts;
+using MyBlog.Repositories.BlogPostCommentRep;
 using MyBlog.Repositories.BlogPostLikes;
 using MyBlog.Repositories.BlogPostRep;
 
@@ -12,23 +14,28 @@ public class BlogsController : Controller
     private readonly IBlogPostLikeRepository _blogPostLikeRepository;
     private readonly SignInManager<IdentityUser> _signInManager;
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly IBlogPostCommentRepository _blogPostCommentRepository;
 
     public BlogsController(IBlogPostRepository blogPostRepository, IBlogPostLikeRepository blogPostLikeRepository,
-        SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager)
+        SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager,
+        IBlogPostCommentRepository blogPostCommentRepository)
     {
         _blogPostRepository = blogPostRepository;
         _blogPostLikeRepository = blogPostLikeRepository;
         _signInManager = signInManager;
         _userManager = userManager;
+        _blogPostCommentRepository = blogPostCommentRepository;
     }
     [HttpGet]
     public async Task<IActionResult> Index(string urlHandle)
     {
+        Console.WriteLine("==============================\nIN GET INDEX FOR DETAILS\n==========================");
         var blogPost = await _blogPostRepository.GetByUrlAsync(urlHandle);
         var viewPost = new BlogDetailsRequest();
         bool userLikedPost = false;
         
         if (blogPost != null) {
+            Console.WriteLine("==============================\nIN BLOGPOST != NULL\n==========================");
             var totalLikesAmount = await _blogPostLikeRepository.GetTotalLikesAsync(blogPost.Id);
 
             //check for user is signed in for checking is user liked blog post
@@ -38,6 +45,18 @@ public class BlogsController : Controller
 
                 userLikedPost = await _blogPostLikeRepository.IsUserAlreadyLikedThisPost(allLikesFromThisBlog,
                     _userManager.GetUserId(User));
+            }
+
+            //GET COMMENTS FOR BLOG
+            var blogCommentsDomain = await _blogPostCommentRepository.GetAllByIdAsync(blogPost.Id);
+
+            var commentsForView = new List<BlogComment>();
+            foreach (var blogComment in blogCommentsDomain) {
+                commentsForView.Add(new BlogComment {
+                    Description = blogComment.Description,
+                    DateAdded = blogComment.DateAdded,
+                    UserName = (await _userManager.FindByIdAsync(blogComment.UserId.ToString())).UserName
+                });
             }
 
             //todo TO MAP FUNC
@@ -55,12 +74,32 @@ public class BlogsController : Controller
                 IsVisible = blogPost.IsVisible,
                 Tags = blogPost.Tags,
                 TotalLikes = totalLikesAmount,
-                IsLikedByCurrentUser = userLikedPost
+                IsLikedByCurrentUser = userLikedPost,
+                CommentsDescription = String.Empty,
+                Comments = commentsForView
             };
         }
         
-        
-        
         return View(viewPost);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Index(BlogDetailsRequest blogDetailsRequest)
+    {
+        if (_signInManager.IsSignedIn(User)) {
+            var modelForSave = new BlogPostComment {
+                BlogPostId = blogDetailsRequest.Id,
+                Description = blogDetailsRequest.CommentsDescription,
+                UserId = Guid.Parse(_userManager.GetUserId(User)),
+                DateAdded = DateTime.Now
+            };
+            
+            await _blogPostCommentRepository.AddAsync(modelForSave);
+
+            return RedirectToAction("Index", 
+                new { urlHandle = blogDetailsRequest.UrlHandle });
+        }
+
+        return View();
     }
 }
