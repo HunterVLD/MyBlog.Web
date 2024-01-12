@@ -22,13 +22,13 @@
                 <div class="mb-3">
                     @if (SignInManager.IsSignedIn(User)) {
                         if (Model.IsLikedByCurrentUser) {
-                            <a style="cursor:pointer;">
-                                <i class="bi bi-hand-thumbs-up"></i>
+                            <a id="btnLike" style="cursor:pointer;">
+                                <i class="bi bi-hand-thumbs-up-fill"></i>
                             </a>
                         }
                         else {
                             <a id="btnLike" style="cursor:pointer;">
-                                <i class="bi bi-hand-thumbs-up-fill"></i>
+                                <i class="bi bi-hand-thumbs-up"></i>
                             </a>
                         }
                     }
@@ -118,7 +118,7 @@
         
         //func from api controller 
         async function addLikeForBlog(){
-            fetch('/api/BlogPostLike/Add', {
+            fetch('/api/BlogPostLike/ToggleLike', {
                 method: 'POST',
                 headers: {
                     'Content-Type' : 'application/json',
@@ -126,13 +126,26 @@
                 },
                 //passing vars to func body
                 body : JSON.stringify({ blogPostId: '@Model.Id', 
-                userId: '@UserManager.GetUserId(User)' })
+                userId: '@UserManager.GetUserId(User)',
+                isLikedThisPost: '@(@Model.IsLikedByCurrentUser ? 1 : 0)'})
                 
-            }).then(() => {
-                btnLikeEl.innerHTML = '<i class="bi bi-hand-thumbs-up"></i>';
-                btnLikeEl.removeEventListener('click', addLikeForBlog);
+            }).then((response) => {
+                if (response.status !== 200)
+                    return;
+             
+                if (@Model.IsLikedByCurrentUser){
+                    @Model.IsLikedByCurrentUser = false;
+                    
+                    btnLikeEl.innerHTML = '<i class="bi bi-hand-thumbs-up"></i>';
+                }
+                else {
+                    @Model.IsLikedByCurrentUser = true;
+                    
+                    btnLikeEl.innerHTML = '<i class="bi bi-hand-thumbs-up-fill"></i>';
+                }
+                
                 getTotalLikes();
-            })
+            });
         }
         
         btnLikeEl.addEventListener('click', addLikeForBlog);

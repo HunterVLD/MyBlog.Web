@@ -18,18 +18,43 @@ public class BlogPostLikeRepository : IBlogPostLikeRepository
         return await _dbContext.BlogPostLike.CountAsync(x => x.BlogPostId == blogPostId);
     }
 
+    public async Task<BlogPostLike?> GetUserLikeIdForCurrentPost(Guid postId, Guid userId)
+    {
+        return await _dbContext.BlogPostLike.FirstOrDefaultAsync(x => x.BlogPostId == postId && x.UserId == userId);
+    }
+
     public async Task<IEnumerable<BlogPostLike>> GetLikesForBlog(Guid blogPostId)
     {
         return await _dbContext.BlogPostLike.Where(x => x.BlogPostId == blogPostId).ToListAsync();
     }
 
-    //todo add delete ike functionality
-    public async Task<BlogPostLike> AddLikeForBlogAsync(BlogPostLike blogPostLike)
+    public async Task<BlogPostLike?> AddLikeForBlogAsync(BlogPostLike blogPostLike)
     {
+        var existingLike = await _dbContext.BlogPostLike.FirstOrDefaultAsync(
+            x => x.BlogPostId == blogPostLike.BlogPostId && x.UserId == blogPostLike.UserId);
+
+        if (existingLike != null) {
+            return null;
+        }
+        
         await _dbContext.BlogPostLike.AddAsync(blogPostLike);
         await _dbContext.SaveChangesAsync();
 
         return blogPostLike;
+    }
+
+    public async Task<bool> DeleteLikeForBlogAsync(Guid id)
+    {
+        var like = await _dbContext.BlogPostLike.FirstOrDefaultAsync(x => x.Id == id);
+
+        if (like != null) {
+            _dbContext.BlogPostLike.Remove(like);
+            await _dbContext.SaveChangesAsync();
+            
+            return true;
+        }
+
+        return false;
     }
 
     public Task<bool> IsUserAlreadyLikedThisPost(IEnumerable<BlogPostLike> likes, string? userId)

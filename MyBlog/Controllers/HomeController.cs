@@ -19,6 +19,7 @@ public class HomeController : Controller
         _blogPostRepository = blogPostRepository;
     }
 
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
         var allPosts = (await _blogPostRepository.GetAllAsync())
@@ -32,6 +33,29 @@ public class HomeController : Controller
             blogPosts = allPosts
         };
         
+        return View(mergeModels);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Index(Guid id)
+    {
+        Console.WriteLine("IIIIIIIIIIIIIIIIIIIIDDJDJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ\njjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj\njjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
+        var chosenTag = await _tagRepository.GetByIdAsync(id);
+
+        if (chosenTag == null)
+            return RedirectToAction("Index", "Home");
+
+        var allPosts = (await _blogPostRepository.GetByTagAsync(chosenTag))
+            .Where(x=> x.IsVisible)
+            .OrderByDescending(x=> x.PublishedDate);
+
+        var allTags = await _tagRepository.GetAllAsync();
+        
+        var mergeModels = new HomeMergeRequest {
+            tags = allTags,
+            blogPosts = allPosts
+        };
+
         return View(mergeModels);
     }
 

@@ -26,17 +26,26 @@ public class BlogPostRepository : IBlogPostRepository
         return await _dbContext.BlogPosts.Include(x=> x.Tags).FirstAsync(x => x.Id == id);
     }
 
-    public async Task<BlogPost?> GetByTagAsync(Tag tag)
-    {
-        throw new NotImplementedException();
-    }
+    
 
     public async Task<BlogPost?> GetByUrlAsync(string url)
     {
         return await _dbContext.BlogPosts.Include(x => x.Tags)
             .FirstOrDefaultAsync(x => x.UrlHandle == url);
     }
-    
+
+    public async Task<IEnumerable<BlogPost>> GetByTagAsync(Tag tag)
+    {
+        var shit = await _dbContext.BlogPosts.Include(x => x.Tags)
+            .Where(x => x.Tags.Contains(tag)).ToListAsync();
+
+        foreach (var item in shit) {
+            Console.WriteLine(item.Heading);
+        }
+
+        return shit;
+    }
+
     #endregion
     
     #region CRUD

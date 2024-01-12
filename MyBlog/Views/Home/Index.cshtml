@@ -29,11 +29,15 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-6 d-flex">
-            <!-- todo delete any probably for performance -->
             @if (Model != null && Model.tags.Any()) {
                 foreach (var tag in Model.tags) {
-                    //todo DO IN <a> 
-                    <span class="badge bg-dark me-1">@tag.Name</span>
+                    <form method="post"
+                          asp-area=""
+                          asp-controller="Home"
+                          asp-action="Index"
+                          asp-route-id="@tag.Id">
+                        <button type="submit" class="badge bg-dark me-1">@tag.Name</button>
+                    </form>
                 }
             }
         </div>
@@ -43,7 +47,6 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-6">
-            <!-- todo delete any probably for performance -->
             @if (Model != null && Model.blogPosts.Any()) {
                 foreach (var blogPost in Model.blogPosts) {
                     <div class="mb-5 bg-light box-shadow p-4">
@@ -73,7 +76,9 @@
                     </div>
                 }
             }
-
+            else {
+                <p>Posts Not Found!</p>
+            }
 
         </div>
     </div>

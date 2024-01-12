@@ -29,13 +29,11 @@ public class BlogsController : Controller
     [HttpGet]
     public async Task<IActionResult> Index(string urlHandle)
     {
-        Console.WriteLine("==============================\nIN GET INDEX FOR DETAILS\n==========================");
         var blogPost = await _blogPostRepository.GetByUrlAsync(urlHandle);
         var viewPost = new BlogDetailsRequest();
         bool userLikedPost = false;
         
         if (blogPost != null) {
-            Console.WriteLine("==============================\nIN BLOGPOST != NULL\n==========================");
             var totalLikesAmount = await _blogPostLikeRepository.GetTotalLikesAsync(blogPost.Id);
 
             //check for user is signed in for checking is user liked blog post
@@ -78,6 +76,9 @@ public class BlogsController : Controller
                 CommentsDescription = String.Empty,
                 Comments = commentsForView
             };
+            
+            Console.WriteLine("NNNNNNNNNNNNNNNNNNNNIIIIIIIIGAAAAA\n\n\n\n" + userLikedPost);
+
         }
         
         return View(viewPost);

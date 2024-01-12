@@ -23,9 +23,25 @@ namespace MyBlog.Controllers
         
         //only in file without [FromBody]!
         [HttpPost]
-        [Route("Add")]
-        public async Task<IActionResult> AddLike([FromBody] AddLikeRequest addLikeRequest)
+        [Route("ToggleLike")]
+        public async Task<IActionResult> ToggleLike([FromBody] AddLikeRequest addLikeRequest)
         {
+            if (addLikeRequest.IsLikedThisPost == 1) {
+                var currentLike =
+                    await _blogPostLikeRepository.GetUserLikeIdForCurrentPost(addLikeRequest.BlogPostId,
+                        addLikeRequest.UserId);
+
+                if (currentLike == null)
+                    return BadRequest();
+
+                var res = await _blogPostLikeRepository.DeleteLikeForBlogAsync(currentLike.Id);
+
+                if (!res)
+                    return BadRequest();
+                
+                return Ok();
+            }
+            
             var like = new BlogPostLike {
                 BlogPostId = addLikeRequest.BlogPostId,
                 UserId = addLikeRequest.UserId
