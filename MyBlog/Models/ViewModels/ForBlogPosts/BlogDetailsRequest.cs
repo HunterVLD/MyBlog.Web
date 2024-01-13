@@ -29,6 +29,7 @@ public class BlogDetailsRequest
     //just for your comment for write
     [Required]
     [MinLength(2, ErrorMessage = "At least 2 chars!")]
+    [MaxLength(45, ErrorMessage = "Max number of lenght is 45")]
     public string CommentsDescription { get; set; }
     
     //for display all comments

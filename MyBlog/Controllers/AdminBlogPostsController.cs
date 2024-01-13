@@ -50,9 +50,31 @@ public class AdminBlogPostsController : Controller
             var newBlogPost = await _blogPostRepository.MappingToBlogPost(addBlogPostRequest, _tagRepository);
             await _blogPostRepository.AddAsync(newBlogPost);
 
-            return RedirectToAction("Add");
+            return RedirectToAction("ListOfBlogs");
         }
 
+        foreach (var key in ModelState.Keys)
+        {
+            var entry = ModelState[key];
+            if (entry.Errors.Any())
+            {
+                var errorMessage = entry.Errors.First().ErrorMessage;
+                Console.WriteLine("\n\n\n " +errorMessage + "\n\n\n");
+            }
+        }
+
+        var tags = await _tagRepository.GetAllAsync();
+
+        if (tags != null) {
+            addBlogPostRequest.Tags = tags.Select(x => new SelectListItem {
+                Text = x.DisplayName,
+                Value = x.Id.ToString()
+            });
+        
+            //DISPLAYING ALL CREATED TAGS IN MODEL
+            return View(addBlogPostRequest);
+        }
+        
         return View();
     }
     

@@ -1,4 +1,6 @@
-﻿namespace MyBlog.Models.ViewModels.ForBlogPosts;
+﻿using Microsoft.Build.Framework;
+
+namespace MyBlog.Models.ViewModels.ForBlogPosts;
 
 public class BlogComment
 {
