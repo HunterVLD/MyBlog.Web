@@ -25,24 +25,25 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        var user = new IdentityUser {
-            UserName = request.Username,
-            Email = request.Email,
-        };
+        if (ModelState.IsValid) {
+            var user = new IdentityUser {
+                UserName = request.Username,
+                Email = request.Email,
+            };
         
-        var registerResult = await _userManager.CreateAsync(user, request.Password);
+            var registerResult = await _userManager.CreateAsync(user, request.Password);
         
-        if (registerResult.Succeeded) {
-            var pasteRoleResult = await _userManager.AddToRoleAsync(user, "User");
+            if (registerResult.Succeeded) {
+                var pasteRoleResult = await _userManager.AddToRoleAsync(user, "User");
 
-            if (pasteRoleResult.Succeeded) {
-                await _signInManager.PasswordSignInAsync(request.Username, request.Password, false, false);
+                if (pasteRoleResult.Succeeded) {
+                    await _signInManager.PasswordSignInAsync(request.Username, request.Password, false, false);
                 
-                return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home");
+                }
             }
         }
-
-        //todo show error notification
+        
         return View();
     }
 
@@ -63,17 +64,18 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Login(LoginRequest request)
     {
-        var signInResult = await _signInManager.PasswordSignInAsync(request.Username, request.Password, false, false);
+        if (ModelState.IsValid) {
+            var signInResult = await _signInManager.PasswordSignInAsync(request.Username, request.Password, false, false);
 
-        if (signInResult.Succeeded) {
+            if (signInResult.Succeeded) {
 
-            if (!string.IsNullOrEmpty(request.returnUrl)) {
-                return Redirect(request.returnUrl);
+                if (!string.IsNullOrEmpty(request.returnUrl)) {
+                    return Redirect(request.returnUrl);
+                }
+                return RedirectToAction("Index", "Home");
             }
-            return RedirectToAction("Index", "Home");
         }
-        
-        //todo show errors
+
         return View();
     }
     
