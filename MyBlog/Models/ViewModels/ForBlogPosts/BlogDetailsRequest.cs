@@ -27,8 +27,8 @@ public class BlogDetailsRequest
     public bool IsLikedByCurrentUser { get; set; }
     
     //just for your comment for write
-    [Microsoft.Build.Framework.Required]
-    [MinLength(2, ErrorMessage = "At Least 2 chars!")]
+    [Required]
+    [MinLength(2, ErrorMessage = "At least 2 chars!")]
     public string CommentsDescription { get; set; }
     
     //for display all comments

@@ -63,6 +63,14 @@
                                     <!--todo TRY WITHOUT THIS SHIT -->
                                     <input type="hidden" asp-for="Id"/>
                                     <input type="hidden" asp-for="UrlHandle"/>
+                                    <input type="hidden" asp-for="Author"/>
+                                    <input type="hidden" asp-for="Content"/>
+                                    <input type="hidden" asp-for="Heading"/>
+                                    <input type="hidden" asp-for="ShortDescription"/>
+                                    <input type="hidden" asp-for="Tags"/>
+                                    <input type="hidden" asp-for="Comments"/>
+                                    <input type="hidden" asp-for="PageTitle"/>
+                                    <input type="hidden" asp-for="FeaturedImageUrl"/>
                                 </div>
                             </form>
                         }
@@ -100,7 +108,7 @@
     <script>
         const btnLikeEl = document.getElementById('btnLike');
         const amountOfLikes = document.getElementById('totalLikes');
-        let _isLikedThisPost = @Json.Serialize(Model.IsLikedByCurrentUser);
+        let _isLikedThisPost = @Model?.IsLikedByCurrentUser.ToString().ToLower();
         
         console.log(_isLikedThisPost);
         
@@ -110,7 +118,7 @@
         //IN GET METHODS WE DONT WRITE "body: JSON.stringify({...})"
         //WHEN WE GET SOME VALS WE MUST CONVERT DATA TO JSON .then(data => data.json())
         async function getTotalLikes(){
-            fetch('/api/BlogPostLike/@Model.Id/totalLikes', {
+            fetch('/api/BlogPostLike/@Model?.Id/totalLikes', {
                 method: 'GET',
                 headers : {
                     'Content-Type': 'application/json',
@@ -129,7 +137,7 @@
                     'Accept' : '*/*'
                 },
                 //passing vars to func body
-                body : JSON.stringify({ blogPostId: '@Model.Id', 
+                body : JSON.stringify({ blogPostId: '@Model?.Id', 
                 userId: '@UserManager.GetUserId(User)',
                 isLikedThisPost: _isLikedThisPost ? 1 : 0 })
                 

@@ -99,6 +99,17 @@ public class BlogsController : Controller
                     new { urlHandle = blogDetailsRequest.UrlHandle });
             }
         }
+        else {
+            foreach (var key in ModelState.Keys)
+            {
+                var entry = ModelState[key];
+                if (entry.Errors.Any())
+                {
+                    var errorMessage = entry.Errors.First().ErrorMessage;
+                    Console.WriteLine("\n\n\n " +errorMessage);
+                }
+            }
+        }
 
         return View();
     }
