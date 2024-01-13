@@ -6,4 +6,5 @@ public interface IBlogPostCommentRepository
 {
     Task<BlogPostComment> AddAsync(BlogPostComment blogPostComment);
     Task<IEnumerable<BlogPostComment>> GetAllByIdAsync(Guid id);
+    Task<bool> DeleteAllUserCommentsByIdAsync(Guid id);
 }

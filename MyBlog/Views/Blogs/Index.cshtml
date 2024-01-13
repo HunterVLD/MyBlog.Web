@@ -45,7 +45,7 @@
                 <img src="@Model.FeaturedImageUrl" alt="@Model.Heading" class="d-block img-fluid mb-3"/>
 
                 <div class="mb-3 blog-details-content">
-                    @Html.Raw(Model.Content);
+                    @Html.Raw(Model.Content)
                 </div>
 
                 <div class="card">
@@ -99,6 +99,9 @@
     <script>
         const btnLikeEl = document.getElementById('btnLike');
         const amountOfLikes = document.getElementById('totalLikes');
+        let _isLikedThisPost = @Json.Serialize(Model.IsLikedByCurrentUser);
+        
+        console.log(_isLikedThisPost);
         
         //other func for getting total amount from api method by specific
         //route by Model.id, when we call this fetches - we call path firstly with
@@ -127,24 +130,25 @@
                 //passing vars to func body
                 body : JSON.stringify({ blogPostId: '@Model.Id', 
                 userId: '@UserManager.GetUserId(User)',
-                isLikedThisPost: '@(@Model.IsLikedByCurrentUser ? 1 : 0)'})
+                isLikedThisPost: _isLikedThisPost ? 1 : 0 })
                 
             }).then((response) => {
+                getTotalLikes();
+                
                 if (response.status !== 200)
                     return;
              
-                if (@Model.IsLikedByCurrentUser){
-                    @Model.IsLikedByCurrentUser = false;
+                if (_isLikedThisPost){
+                    _isLikedThisPost = false;
                     
                     btnLikeEl.innerHTML = '<i class="bi bi-hand-thumbs-up"></i>';
                 }
                 else {
-                    @Model.IsLikedByCurrentUser = true;
+                    _isLikedThisPost = true;
                     
                     btnLikeEl.innerHTML = '<i class="bi bi-hand-thumbs-up-fill"></i>';
                 }
                 
-                getTotalLikes();
             });
         }
         

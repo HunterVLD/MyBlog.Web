@@ -27,4 +27,23 @@ public class BlogPostCommentRepository : IBlogPostCommentRepository
             .Where(x => x.BlogPostId == id)
             .ToListAsync();
     }
+
+    public async Task<bool> DeleteAllUserCommentsByIdAsync(Guid id)
+    {
+        var allComments = await _dbContext.BlogPostComment
+            .Where(x => x.UserId == id)
+            .ToListAsync();
+
+        if (allComments != null && allComments.Any()) {
+            foreach (var comment in allComments) {
+                _dbContext.BlogPostComment.Remove(comment);
+            }
+
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        return false;
+    }
 }

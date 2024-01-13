@@ -18,12 +18,12 @@ public class BlogPostLikeRepository : IBlogPostLikeRepository
         return await _dbContext.BlogPostLike.CountAsync(x => x.BlogPostId == blogPostId);
     }
 
-    public async Task<BlogPostLike?> GetUserLikeIdForCurrentPost(Guid postId, Guid userId)
+    public async Task<BlogPostLike?> GetUserLikeIdForCurrentPostAsync(Guid postId, Guid userId)
     {
         return await _dbContext.BlogPostLike.FirstOrDefaultAsync(x => x.BlogPostId == postId && x.UserId == userId);
     }
 
-    public async Task<IEnumerable<BlogPostLike>> GetLikesForBlog(Guid blogPostId)
+    public async Task<IEnumerable<BlogPostLike>> GetLikesForBlogAsync(Guid blogPostId)
     {
         return await _dbContext.BlogPostLike.Where(x => x.BlogPostId == blogPostId).ToListAsync();
     }
@@ -57,7 +57,26 @@ public class BlogPostLikeRepository : IBlogPostLikeRepository
         return false;
     }
 
-    public Task<bool> IsUserAlreadyLikedThisPost(IEnumerable<BlogPostLike> likes, string? userId)
+    public async Task<bool> DeleteAllLikesFromUserIdAsync(Guid id)
+    {
+        var allLikes = await _dbContext.BlogPostLike
+            .Where(x => x.UserId == id)
+            .ToListAsync();
+
+        if (allLikes != null && allLikes.Any()) {
+            foreach (var like in allLikes) {
+                _dbContext.BlogPostLike.Remove(like);
+            }
+
+            await _dbContext.SaveChangesAsync();
+            
+            return true;
+        }
+
+        return false;
+    }
+
+    public Task<bool> IsUserAlreadyLikedThisPostAsync(IEnumerable<BlogPostLike> likes, string? userId)
     {
         if (string.IsNullOrEmpty(userId)) {
             throw new NullReferenceException();

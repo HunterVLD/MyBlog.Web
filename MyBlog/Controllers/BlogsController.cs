@@ -39,9 +39,9 @@ public class BlogsController : Controller
             //check for user is signed in for checking is user liked blog post
             if (_signInManager.IsSignedIn(User)) {
                 var allLikesFromThisBlog =
-                    await _blogPostLikeRepository.GetLikesForBlog(blogPost.Id);
+                    await _blogPostLikeRepository.GetLikesForBlogAsync(blogPost.Id);
 
-                userLikedPost = await _blogPostLikeRepository.IsUserAlreadyLikedThisPost(allLikesFromThisBlog,
+                userLikedPost = await _blogPostLikeRepository.IsUserAlreadyLikedThisPostAsync(allLikesFromThisBlog,
                     _userManager.GetUserId(User));
             }
 
@@ -76,9 +76,6 @@ public class BlogsController : Controller
                 CommentsDescription = String.Empty,
                 Comments = commentsForView
             };
-            
-            Console.WriteLine("NNNNNNNNNNNNNNNNNNNNIIIIIIIIGAAAAA\n\n\n\n" + userLikedPost);
-
         }
         
         return View(viewPost);

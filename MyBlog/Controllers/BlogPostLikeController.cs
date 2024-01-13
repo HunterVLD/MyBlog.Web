@@ -26,9 +26,13 @@ namespace MyBlog.Controllers
         [Route("ToggleLike")]
         public async Task<IActionResult> ToggleLike([FromBody] AddLikeRequest addLikeRequest)
         {
+            /*Console.WriteLine($"=================================================================NIGGA\n" +
+                              $"\n" +
+                              $"{addLikeRequest} -BASIS | {addLikeRequest.IsLikedThisPost} / {addLikeRequest.BlogPostId} / {addLikeRequest.UserId}\n" +
+                              $"=================================================================NIGGA");*/
             if (addLikeRequest.IsLikedThisPost == 1) {
                 var currentLike =
-                    await _blogPostLikeRepository.GetUserLikeIdForCurrentPost(addLikeRequest.BlogPostId,
+                    await _blogPostLikeRepository.GetUserLikeIdForCurrentPostAsync(addLikeRequest.BlogPostId,
                         addLikeRequest.UserId);
 
                 if (currentLike == null)
