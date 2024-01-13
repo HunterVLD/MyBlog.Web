@@ -39,7 +39,6 @@ public class HomeController : Controller
     [HttpPost]
     public async Task<IActionResult> Index(Guid id)
     {
-        Console.WriteLine("IIIIIIIIIIIIIIIIIIIIDDJDJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ\njjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj\njjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj");
         var chosenTag = await _tagRepository.GetByIdAsync(id);
 
         if (chosenTag == null)

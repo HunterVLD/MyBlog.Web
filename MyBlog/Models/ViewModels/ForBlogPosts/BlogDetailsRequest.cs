@@ -1,4 +1,5 @@
-﻿using MyBlog.Models.Domain;
+﻿using System.ComponentModel.DataAnnotations;
+using MyBlog.Models.Domain;
 
 namespace MyBlog.Models.ViewModels.ForBlogPosts;
 
@@ -26,6 +27,8 @@ public class BlogDetailsRequest
     public bool IsLikedByCurrentUser { get; set; }
     
     //just for your comment for write
+    [Microsoft.Build.Framework.Required]
+    [MinLength(2, ErrorMessage = "At Least 2 chars!")]
     public string CommentsDescription { get; set; }
     
     //for display all comments

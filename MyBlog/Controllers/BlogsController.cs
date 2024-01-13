@@ -84,18 +84,20 @@ public class BlogsController : Controller
     [HttpPost]
     public async Task<IActionResult> Index(BlogDetailsRequest blogDetailsRequest)
     {
-        if (_signInManager.IsSignedIn(User)) {
-            var modelForSave = new BlogPostComment {
-                BlogPostId = blogDetailsRequest.Id,
-                Description = blogDetailsRequest.CommentsDescription,
-                UserId = Guid.Parse(_userManager.GetUserId(User)),
-                DateAdded = DateTime.Now
-            };
+        if (ModelState.IsValid) {
+            if (_signInManager.IsSignedIn(User)) {
+                var modelForSave = new BlogPostComment {
+                    BlogPostId = blogDetailsRequest.Id,
+                    Description = blogDetailsRequest.CommentsDescription,
+                    UserId = Guid.Parse(_userManager.GetUserId(User)),
+                    DateAdded = DateTime.Now
+                };
             
-            await _blogPostCommentRepository.AddAsync(modelForSave);
+                await _blogPostCommentRepository.AddAsync(modelForSave);
 
-            return RedirectToAction("Index", 
-                new { urlHandle = blogDetailsRequest.UrlHandle });
+                return RedirectToAction("Index", 
+                    new { urlHandle = blogDetailsRequest.UrlHandle });
+            }
         }
 
         return View();

@@ -45,19 +45,15 @@ public class AdminBlogPostsController : Controller
     [HttpPost]
     public async Task<IActionResult> Add(AddBlogPostRequest addBlogPostRequest)
     {
-        //CHECKING FOR NULL
-        var resultOfValidation = new List<ValidationResult>();
-        var contextValidation = new ValidationContext(addBlogPostRequest, null, null);
-        
-        //todo ADD TEXT ON VIEW
-        if (!Validator.TryValidateObject(addBlogPostRequest, contextValidation, resultOfValidation, true))
-            return RedirectToAction("Add");
-        
-        //GOING TO BASIC FUNCTIONALITY
-        var newBlogPost = await _blogPostRepository.MappingToBlogPost(addBlogPostRequest, _tagRepository);
-        await _blogPostRepository.AddAsync(newBlogPost);
+        if (ModelState.IsValid) {
+            //GOING TO BASIC FUNCTIONALITY
+            var newBlogPost = await _blogPostRepository.MappingToBlogPost(addBlogPostRequest, _tagRepository);
+            await _blogPostRepository.AddAsync(newBlogPost);
 
-        return RedirectToAction("Add");
+            return RedirectToAction("Add");
+        }
+
+        return View();
     }
     
 
@@ -102,20 +98,17 @@ public class AdminBlogPostsController : Controller
     [HttpPost]
     public async Task<IActionResult> EditPost(EditBlogPostRequest editBlogPostRequest)
     {
-        //CHECKING FOR NULL
-        var resultOfValidation = new List<ValidationResult>();
-        var contextValidation = new ValidationContext(editBlogPostRequest, null, null);
+        if (ModelState.IsValid) {
+            //CONTINUE BASIC funcs
+            var editedBlogPost = await _blogPostRepository.MappingToBlogPost(editBlogPostRequest, _tagRepository);
         
-        if (!Validator.TryValidateObject(editBlogPostRequest, contextValidation, resultOfValidation, true))
-            return RedirectToAction("EditPost");
-        
-        //CONTINUE BASIC funcs
-        var editedBlogPost = await _blogPostRepository.MappingToBlogPost(editBlogPostRequest, _tagRepository);
-        
-        Console.WriteLine((editedBlogPost == null) + "======================================= after mapping");
-        Console.WriteLine((await _blogPostRepository.UpdateAsync(editedBlogPost) == null) + "======================================= after updating");
+            Console.WriteLine((editedBlogPost == null) + "======================================= after mapping");
+            Console.WriteLine((await _blogPostRepository.UpdateAsync(editedBlogPost) == null) + "======================================= after updating");
 
-        return RedirectToAction("ListOfBlogs");
+            return RedirectToAction("ListOfBlogs");
+        }
+        
+        return View();
     }
 
     #endregion
