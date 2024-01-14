@@ -6,7 +6,7 @@ namespace MyBlog.Models.ViewModels.Users;
 public class UserViewModel
 {
     //for display users
-    public List<User> Users { get; set; }
+    public List<User>? Users { get; set; }
     
     //for add new users
     [Required]

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MyBlog.Data;
 using MyBlog.Models.ViewModels;
 
 namespace MyBlog.Controllers;
@@ -8,11 +10,14 @@ public class AccountController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly SignInManager<IdentityUser> _signInManager;
+    private readonly AuthDbContext _authDbContext;
 
-    public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+    public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
+        AuthDbContext authDbContext)
     {
         _userManager = userManager;
         _signInManager = signInManager;
+        _authDbContext = authDbContext;
     }
 
     #region Register
@@ -26,6 +31,18 @@ public class AccountController : Controller
     public async Task<IActionResult> Register(RegisterRequest request)
     {
         if (ModelState.IsValid) {
+            if (await _authDbContext.Users.AnyAsync(u => u.UserName == request.Username)) {
+                ModelState.AddModelError("Username", "This Name is Already Exists!");
+                
+                return View();
+            }
+
+            if (await _authDbContext.Users.AnyAsync(u => u.Email == request.Email)) {
+                ModelState.AddModelError("Email", "This Email is already have registered account");
+
+                return View();
+            }
+            
             var user = new IdentityUser {
                 UserName = request.Username,
                 Email = request.Email,

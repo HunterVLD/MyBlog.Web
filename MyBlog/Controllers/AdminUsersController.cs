@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MyBlog.Data;
 using MyBlog.Models.ViewModels.Users;
 using MyBlog.Repositories;
@@ -15,15 +16,18 @@ public class AdminUsersController : Controller
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IBlogPostLikeRepository _blogPostLikeRepository;
     private readonly IBlogPostCommentRepository _blogPostCommentRepository;
+    private readonly AuthDbContext _authDbContext;
     private readonly IUsersRepository _usersRepository;
 
     public AdminUsersController(IUsersRepository usersRepository, UserManager<IdentityUser> userManager,
-        IBlogPostLikeRepository blogPostLikeRepository, IBlogPostCommentRepository blogPostCommentRepository)
+        IBlogPostLikeRepository blogPostLikeRepository, IBlogPostCommentRepository blogPostCommentRepository,
+        AuthDbContext authDbContext)
     {
         _usersRepository = usersRepository;
         _userManager = userManager;
         _blogPostLikeRepository = blogPostLikeRepository;
         _blogPostCommentRepository = blogPostCommentRepository;
+        _authDbContext = authDbContext;
     }
     
     [HttpGet]
@@ -50,24 +54,38 @@ public class AdminUsersController : Controller
     [HttpPost]
     public async Task<IActionResult> List(UserViewModel request)
     {
-        var identityUser = new IdentityUser {
-            UserName = request.UserName,
-            Email = request.Email,
-        };
+        if (ModelState.IsValid) {
+            if (await _authDbContext.Users.AnyAsync(u => u.UserName == request.UserName)) {
+                ModelState.AddModelError("UserName", "This Name is Already Exists!");
+                
+                return View();
+            }
 
-        var identityResult =
-            await _userManager.CreateAsync(identityUser, request.Password);
+            if (await _authDbContext.Users.AnyAsync(u => u.Email == request.Email)) {
+                ModelState.AddModelError("Email", "This Email is already have registered account");
 
-        if (identityResult.Succeeded) {
-            var roles = new List<string> { "User" };
+                return View();
+            }
+            
+            var identityUser = new IdentityUser {
+                UserName = request.UserName,
+                Email = request.Email,
+            };
 
-            if (request.AdminRoleCheckbox && User.IsInRole("SuperAdmin"))
-                roles.Add("Admin");
+            var identityResult =
+                await _userManager.CreateAsync(identityUser, request.Password);
 
-            var result = await _userManager.AddToRolesAsync(identityUser, roles);
+            if (identityResult.Succeeded) {
+                var roles = new List<string> { "User" };
 
-            if (result.Succeeded)
-                return RedirectToAction("List");
+                if (request.AdminRoleCheckbox && User.IsInRole("SuperAdmin"))
+                    roles.Add("Admin");
+
+                var result = await _userManager.AddToRolesAsync(identityUser, roles);
+
+                if (result.Succeeded)
+                    return RedirectToAction("List");
+            }
         }
 
         return View();

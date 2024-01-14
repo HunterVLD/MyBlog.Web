@@ -57,25 +57,8 @@ public class BlogsController : Controller
                 });
             }
 
-            //todo TO MAP FUNC
-            viewPost = new BlogDetailsRequest
-            {
-                Id = blogPost.Id,
-                Content = blogPost.Content,
-                PageTitle = blogPost.PageTitle,
-                Author = blogPost.Author,
-                FeaturedImageUrl = blogPost.FeaturedImageUrl,
-                Heading = blogPost.Heading,
-                PublishedDate = blogPost.PublishedDate,
-                ShortDescription = blogPost.ShortDescription,
-                UrlHandle = blogPost.UrlHandle,
-                IsVisible = blogPost.IsVisible,
-                Tags = blogPost.Tags,
-                TotalLikes = totalLikesAmount,
-                IsLikedByCurrentUser = userLikedPost,
-                CommentsDescription = String.Empty,
-                Comments = commentsForView
-            };
+            viewPost = _blogPostCommentRepository.MappingToViewModel(blogPost, totalLikesAmount, userLikedPost,
+                commentsForView);
         }
         
         return View(viewPost);
