@@ -70,6 +70,10 @@
                                     <input type="hidden" asp-for="Comments"/>
                                     <input type="hidden" asp-for="PageTitle"/>
                                     <input type="hidden" asp-for="FeaturedImageUrl"/>
+                                    <input type="hidden" asp-for="PublishedDate"/>
+                                    <input type="hidden" asp-for="IsVisible"/>
+                                    <input type="hidden" asp-for="TotalLikes"/>
+                                    <input type="hidden" asp-for="IsLikedByCurrentUser"/>
                                 </div>
                             </form>
                         }
@@ -96,7 +100,7 @@
                 </div>
             }
             else {
-                <p>Blog Post Not Found</p>
+                <p>Blog Post Not Found Or Something Went Wrong!</p>
             }
             
         </div>
