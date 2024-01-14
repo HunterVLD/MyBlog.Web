@@ -76,7 +76,7 @@ public class BlogPostRepository : IBlogPostRepository
             existingBlog.Content = post.Content;
             existingBlog.ShortDescription = post.ShortDescription;
             existingBlog.FeaturedImageUrl = post.FeaturedImageUrl;
-            existingBlog.UrlHandle = post.UrlHandle;
+            existingBlog.UrlHandle = post.UrlHandle.ToLower();
             existingBlog.PublishedDate = post.PublishedDate;
             existingBlog.Author = post.Author;
             existingBlog.IsVisible = post.IsVisible;
@@ -120,7 +120,7 @@ public class BlogPostRepository : IBlogPostRepository
             newBlogPost.Content = addBlogPostRequest.Content;
             newBlogPost.ShortDescription = addBlogPostRequest.ShortDescription;
             newBlogPost.FeaturedImageUrl = addBlogPostRequest.FeaturedImageUrl;
-            newBlogPost.UrlHandle = addBlogPostRequest.UrlHandle;
+            newBlogPost.UrlHandle = addBlogPostRequest.UrlHandle.ToLower();
             newBlogPost.PublishedDate = addBlogPostRequest.PublishedDate;
             newBlogPost.Author = addBlogPostRequest.Author;
             newBlogPost.IsVisible = addBlogPostRequest.IsVisible;
@@ -133,7 +133,7 @@ public class BlogPostRepository : IBlogPostRepository
             newBlogPost.Content = editBlogPostRequest.Content;
             newBlogPost.ShortDescription = editBlogPostRequest.ShortDescription;
             newBlogPost.FeaturedImageUrl = editBlogPostRequest.FeaturedImageUrl;
-            newBlogPost.UrlHandle = editBlogPostRequest.UrlHandle;
+            newBlogPost.UrlHandle = editBlogPostRequest.UrlHandle.ToLower();
             newBlogPost.PublishedDate = editBlogPostRequest.PublishedDate;
             newBlogPost.Author = editBlogPostRequest.Author;
             newBlogPost.IsVisible = editBlogPostRequest.IsVisible;
@@ -169,7 +169,7 @@ public class BlogPostRepository : IBlogPostRepository
                 Content = post.Content,
                 ShortDescription = post.ShortDescription,
                 FeaturedImageUrl = post.FeaturedImageUrl,
-                UrlHandle = post.UrlHandle,
+                UrlHandle = post.UrlHandle.ToLower(),
                 PublishedDate = post.PublishedDate,
                 Author = post.Author,
                 IsVisible = post.IsVisible,

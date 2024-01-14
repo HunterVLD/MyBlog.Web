@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using MyBlog.CustomValidators;
 using MyBlog.Models.Domain;
 
 namespace MyBlog.Models.ViewModels.ForBlogPosts;
@@ -30,6 +31,7 @@ public class BlogDetailsRequest
     [Required]
     [MinLength(2, ErrorMessage = "At least 2 chars!")]
     [MaxLength(45, ErrorMessage = "Max number of lenght is 45")]
+    [NormalTextByRegex(ErrorMessage = "Invalid characters are used")]
     public string CommentsDescription { get; set; }
     
     //for display all comments
